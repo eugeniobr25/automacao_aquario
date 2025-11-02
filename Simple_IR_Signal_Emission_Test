@@ -1,0 +1,31 @@
+#include <IRremote.h>
+
+const int IR_SEND_PIN = 3; // pino do LED IR
+IRsend irsend;
+
+void setup() {
+  Serial.begin(9600);
+  irsend.begin();
+  Serial.println("Pronto para enviar sinal IR.");
+  Serial.println("Digite 'L' para ligar ou 'D' para desligar o ar.");
+}
+
+void loop() {
+  if (Serial.available()) {
+    char cmd = Serial.read();
+    if (cmd == 'L' || cmd == 'l') {
+      // Código HEX para LIGAR
+      unsigned long codeOn = 0x77E9DD4F;
+      int bits = 32;
+      irsend.sendNEC(codeOn, bits);
+      Serial.println("Sinal LIGAR enviado!");
+    } 
+    else if (cmd == 'D' || cmd == 'd') {
+      // Código HEX para DESLIGAR
+      unsigned long codeOff = 0x40797C2B;
+      int bits = 32;
+      irsend.sendNEC(codeOff, bits);
+      Serial.println("Sinal DESLIGAR enviado!");
+    }
+  }
+}
