@@ -1,0 +1,34 @@
+#include <IRremote.h>
+
+const int RECV_PIN = 2;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup() {
+  Serial.begin(9600);
+  irrecv.enableIRIn();
+  Serial.println("Aguardando sinal IR (detalhado)...");
+}
+
+void printRaw(decode_results *res) {
+  Serial.print("RawLen: "); Serial.println(res->rawlen);
+  Serial.print("RawBuf: ");
+  for (int i = 0; i < res->rawlen; i++) {
+    Serial.print(res->rawbuf[i]);
+    Serial.print(i < res->rawlen - 1 ? "," : "\n");
+  }
+}
+
+void loop() {
+  if (irrecv.decode(&results)) {
+    Serial.print("Protocolo: ");
+    Serial.println(results.decode_type);
+    Serial.print("Bits: ");
+    Serial.println(results.bits);
+    Serial.print("Valor (HEX): ");
+    Serial.println(results.value, HEX);
+    printRaw(&results);
+    Serial.println("----------");
+    irrecv.resume();
+  }
+}
